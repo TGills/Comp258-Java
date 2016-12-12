@@ -66,24 +66,53 @@ public class Bst {
         
         
     }
-    
+    public void delete(Node current, Comparable target){
+        if(current.getData().compareTo(target)>0 && current.left!=null){
+            delete(current.left,target);
+        }
+        else if(current.getData().compareTo(target)<0 && current.right!= null){
+            delete(current.right, target);
+        }
+        else{
+            System.out.println("Node found: " + current.getData());
+        }       
+        
+    }
+    public void delete(Comparable target){
+        delete(start, target);
+    }
     
     
     
     public static void main(String[] args) {
-        java.util.Random r = new java.util.Random();
+        //java.util.Random r = new java.util.Random();
         Bst bst = new Bst();
-        for(int i=0; i < 20; i++){
-            bst.add(r.nextInt(50));
-        }
+        bst.add(50);
+        bst.add(25);
+        bst.add(75);
+        bst.add(13);
+        bst.add(35);
+        bst.add(66);
+        bst.add(85);
+        bst.add(17);
+        bst.add(90);
+        bst.add(15);
+        bst.add(18);
         bst.printTree();
-        if(bst.searchTree(1) == true){
-            System.out.println("True");
-        }
-        else{
-            System.out.println("False");
-        }
+        System.out.println("ORIGINAL******************");
+        bst.delete(35);
+        bst.printTree();
         
+//        for(int i=0; i < 20; i++){
+//            bst.add(r.nextInt(50));
+//        }
+//        bst.printTree();
+//        if(bst.searchTree(1) == true){
+//            System.out.println("True");
+//        }
+//        else{
+//            System.out.println("False");
+//        }        
     }
     
 }
