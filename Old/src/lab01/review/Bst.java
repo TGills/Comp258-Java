@@ -133,9 +133,6 @@ public class Bst {
 }
 
 
-
-
-
 class Node{    
     private Comparable data;
     public Node left;
