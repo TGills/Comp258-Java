@@ -67,16 +67,31 @@ public class Bst {
         
     }
     public void delete(Node current, Comparable target){
-        if(current.getData().compareTo(target)>0 && current.left!=null){
-            delete(current.left,target);
+        if(current.getData().compareTo(target)>0 && current.left!=null){    
+            if(current.left.getData().compareTo(target)==0) {
+                System.out.println("Parent found: " + current.getData());
+                if(current.right.left == null && current.right.right == null){
+                    current.right = null;
+                }
+            }
+            else{
+                delete(current.left,target);
+            }            
         }
         else if(current.getData().compareTo(target)<0 && current.right!= null){
-            delete(current.right, target);
+            if(current.right.getData().compareTo(target)==0) {
+                System.out.println("Parent found: " + current.getData());
+                if(current.right.left == null && current.right.right == null){
+                    current.right = null;
+                }
+            }
+            else{
+                delete(current.right, target);
+            }            
         }
         else{
-            System.out.println("Node found: " + current.getData());
-        }       
-        
+            System.out.println("Node found: " + current.getData());                 
+        }
     }
     public void delete(Comparable target){
         delete(start, target);
@@ -121,12 +136,10 @@ public class Bst {
 
 
 
-class Node{
-    
+class Node{    
     private Comparable data;
     public Node left;
-    public Node right;
-    
+    public Node right;    
     public Node(){};    
     public Node(Comparable data){
         setData(data);
