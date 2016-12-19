@@ -50,52 +50,133 @@ public class Bst {
     }
     public boolean searchTree(Node current, Comparable data, int calls){
         calls++;
-        if(current.getData() == data){
-            System.out.println("Searches: " + calls);
+        if(current.getData().compareTo(data)==0)
+        {
+            System.out.println(calls+" searches" );
             return true;
         }
-        else if(data.compareTo(current.getData()) < 0 && current.left != null){
-            return searchTree(current.left, data, calls);
-        }
-        else if(data.compareTo(current.getData()) > 0 && current.right != null){
-            return searchTree(current.right, data, calls);
-        }
+        else if(data.compareTo(current.getData())<0 && 
+                current.left!=null)
+            return searchTree(current.left, data,calls);
+        else if(data.compareTo(current.getData()) > 0  && 
+                current.right!=null)
+            return searchTree(current.right, data,calls);
         else{
-            return false;
+             System.out.println(calls+" searches" );
+             return false;
         }
         
         
-    }
-    public void delete(Node current, Comparable target){
-        if(current.getData().compareTo(target)>0 && current.left!=null){    
-            if(current.left.getData().compareTo(target)==0) {
-                System.out.println("Parent found: " + current.getData());
-                if(current.right.left == null && current.right.right == null){
-                    current.right = null;
-                }
-            }
-            else{
-                delete(current.left,target);
-            }            
-        }
-        else if(current.getData().compareTo(target)<0 && current.right!= null){
-            if(current.right.getData().compareTo(target)==0) {
-                System.out.println("Parent found: " + current.getData());
-                if(current.right.left == null && current.right.right == null){
-                    current.right = null;
-                }
-            }
-            else{
-                delete(current.right, target);
-            }            
-        }
-        else{
-            System.out.println("Node found: " + current.getData());                 
-        }
     }
     public void delete(Comparable target){
+        
+        if(start.getData().compareTo(target)==0){
+           System.out.println("delete start");
+        }
+        
         delete(start, target);
+    }    
+    public void delete(Node current, Comparable target){
+    
+            boolean isRight = false;
+            Node nodeToDelete = null;
+            if(current.getData().compareTo(target)>=0 
+                    && current.left!=null ){
+                
+                if(current.left.getData().compareTo(target)==0)
+                {
+                    System.out.println("Parent found: "+current.getData());
+                    nodeToDelete = current.left;
+                }
+                else{
+                   delete(current.left, target);
+                }
+                
+            }
+            else if(current.getData().compareTo(target)<0 
+                    && current.right!=null)
+            {
+                if(current.right.getData().compareTo(target)==0)
+                {
+                    System.out.println("Parent found: "+current.getData());
+                    isRight=true;
+                    nodeToDelete = current.right;                        
+                }
+                else{
+                    delete(current.right, target);
+                }
+            }
+            else{
+               System.out.println("node found: "+current.getData() );
+            }
+            
+            if(nodeToDelete != null){
+                //Case 1.
+                if(nodeToDelete.left==null && 
+                            nodeToDelete.right==null)
+                {
+                        if(isRight)
+                            current.right=null;
+                        else
+                            current.left=null;
+                }
+                //Case 2.
+                else if(nodeToDelete.right==null){
+                    if( isRight)
+                        current.right = nodeToDelete.left;
+                    else
+                        current.left = nodeToDelete.left;
+                }
+                //Case 3.
+                else if(nodeToDelete.right.left==null){
+                    nodeToDelete.right.left=nodeToDelete.left;
+                    current.right = nodeToDelete.right;
+                }
+                //Case 4. 
+                else if(nodeToDelete.right.left!=null){
+                    
+                    Node leftMost = findLeftMostNode(nodeToDelete.right);
+                    deleteLeftMostNode(nodeToDelete.right);
+                    
+                    System.out.println("Current:"+ current.getData());
+                    System.out.println("Node To Delete:"+ nodeToDelete.getData());
+                    System.out.println("Left Most:"+ leftMost.getData());
+                    leftMost.right = nodeToDelete.right;
+                    current.left = leftMost;
+                    
+                }
+                
+            }
     }
+    public Node findRightMostNode(Node node){
+       
+        if(node.right==null)
+            return node;
+        else
+            return findRightMostNode(node.right);
+        
+    }  
+    public Node findLeftMostNode( Node node){
+        
+        if(node.left==null)
+            return node;
+        else
+            return findLeftMostNode(node.left);
+        
+    }    
+    public void deleteLeftMostNode( Node node){        
+        if(node.left.left==null)
+            node.left=null;
+        else
+            deleteLeftMostNode(node.left);
+    } 
+    public void deleteRightMostNode( Node node){        
+        if(node.right.right==null)
+            node.right=null;
+        else
+            deleteRightMostNode(node.right);
+    } 
+    
     
     
     
@@ -113,6 +194,16 @@ public class Bst {
         bst.add(90);
         bst.add(15);
         bst.add(18);
+        bst.add(63);
+        bst.add(90);
+        bst.add(15);
+        bst.add(18);
+        bst.add(89);
+        bst.add(14);
+        bst.add(86);
+        bst.add(12);
+        bst.add(87);
+        bst.add(13);
         bst.printTree();
         System.out.println("ORIGINAL******************");
         bst.delete(35);
