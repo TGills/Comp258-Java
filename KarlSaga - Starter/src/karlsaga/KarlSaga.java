@@ -26,7 +26,7 @@ public class KarlSaga {
                      {1,1,1,1,0,0,0,1,0,1},
                      {1,1,1,1,0,0,0,1,0,1},
                      {1,1,1,0,0,0,0,1,0,1},
-                     {1,1,1,0,1,1,1,0,0,1},
+                     {1,1,1,1,1,1,1,0,0,1},
                      {1,0,0,0,0,0,0,0,1,1},
                      {1,3,1,1,1,1,1,0,1,1},
                      {1,1,1,1,1,1,1,1,1,1}};
@@ -49,10 +49,10 @@ public class KarlSaga {
         
         input = new Scanner(System.in);
     }    
-    public void navigate(int i, int j){
-        
+    public void navigate(int i, int j){        
         addSpaces(maze1, i, j, new Space(i,j));
-        
+        path = new Stack<Space>();
+        q.addFirst(new Space(i,j));
         int x=0;
         while(!found){
             x++;
@@ -63,6 +63,16 @@ public class KarlSaga {
         }
         
         System.out.println(x);
+        
+        Space goal = qv.removeFirst();
+        while(goal!=null){
+            path.push(goal);
+            goal = goal.addedBy;
+            
+        }
+        printPath();
+        
+        
     }    
     public void printPath(){
          System.out.println("path");
@@ -136,13 +146,15 @@ public class KarlSaga {
                     if(maze[i+ii][j+jj]==3)
                     {
                         found=true;
-                        Space s=new Space(i,j);
+                        Space s=new Space(i+ii,j+jj);
                         qv.addFirst(s);
+                        s.addedBy = adder;
                     }
                     else if(maze[i+ii][j+jj]==0 && !found){
-                        Space s=new Space(i,j);
+                        Space s=new Space(i+ii,j+jj);
                         if(!q.contains(s) && !qv.contains(s)){
                            q.addFirst(s);
+                           s.addedBy = adder;
                         }
                     }
                 }

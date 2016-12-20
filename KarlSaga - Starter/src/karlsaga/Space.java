@@ -12,7 +12,7 @@ package karlsaga;
 public class Space {
      public int x;
      public int y;
-     
+     public Space addedBy;
      
      public Space(){}
      public Space(int x, int y){
