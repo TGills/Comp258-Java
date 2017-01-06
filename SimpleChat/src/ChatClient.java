@@ -62,6 +62,7 @@ public class ChatClient extends AbstractClient
   {
     try
     {
+      //Differentiate between loacal and server commands
       sendToServer(message);
     }
     catch(IOException e)

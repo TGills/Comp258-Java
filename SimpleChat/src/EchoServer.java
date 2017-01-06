@@ -38,6 +38,7 @@ public class EchoServer extends AbstractServer
    * @param msg The message received from the client.
    * @param client The connection from which the message originated.
    */
+  //This is where we can differntiate betwen different client requests.
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {

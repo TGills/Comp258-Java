@@ -21,6 +21,7 @@ public class ClientConsole implements ChatIF
    * The instance of the client that created this ConsoleChat.
    */
   ChatClient client;
+          
 
   
   //Constructors ****************************************************
@@ -104,7 +105,7 @@ public class ClientConsole implements ChatIF
     catch(ArrayIndexOutOfBoundsException e)
     {
       host = "localhost";
-    }
+    }    
     ClientConsole chat= new ClientConsole(host, DEFAULT_PORT);
   
     chat.accept();  //Wait for console data
