@@ -318,7 +318,7 @@ public abstract class AbstractServer implements Runnable
           }
         }
         catch (InterruptedIOException exception)
-        {
+        {            
           // This will be thrown when a timeout occurs.
           // The server will continue to listen if not ready to stop.
         }
@@ -354,6 +354,7 @@ public abstract class AbstractServer implements Runnable
    * accepted. The default implementation does nothing.
    * @param client the connection connected to the client.
    */
+  
   protected void clientConnected(ConnectionToClient client) {}
 
   /**
