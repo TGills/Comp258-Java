@@ -136,6 +136,5 @@ public class ChatClient extends AbstractClient {
         System.out.println("Server shutdown");
         connectionClosed();
     }
-
 }
 //End of ChatClient class

@@ -38,8 +38,7 @@ public class EchoServer extends AbstractServer {
         if (message.charAt(0) == '/') {
             System.out.println("Command found");
             handleServerCommand(msg, client);
-        }
-        else{
+        } else {
             System.out.println("Message received: " + msg + " from " + client);
             this.sendToAllClients(msg);
         }
@@ -56,33 +55,58 @@ public class EchoServer extends AbstractServer {
         } else if (message.startsWith("/w")) {
             String target = message.split(" ")[1];
             sendToAClient(msg, target);
+        } else if (message.startsWith("/join")) {
+            System.out.println("Joining Room");
+            String room = message.split(" ")[1];
+            client.setInfo("room", room);
         }
     }
 
     public void sendToAClient(Object msg, String target) {
-        //Provides basic structure to communicate with any and all connected clients
-        //Similar implementation should go in EchoServer
+        String privateMessage = "";
         String message = msg.toString();
 
-        String privateMessage = message.substring(message.indexOf(" "), message.length());
-        privateMessage = privateMessage.trim();
-        privateMessage = privateMessage.substring(privateMessage.indexOf(" "), privateMessage.length());
-        privateMessage = privateMessage.trim();
+        privateMessage = message.substring(message.indexOf(" "), message.length());
+        privateMessage
+                = privateMessage.substring(privateMessage.indexOf(" "), privateMessage.length());
 
         Thread[] clientThreadList = getClientConnections();
 
         for (int i = 0; i < clientThreadList.length; i++) {
-            ConnectionToClient clientProxy = ((ConnectionToClient) clientThreadList[i]);
-            if (clientProxy.getInfo("userName").equals(target)) {
 
+            ConnectionToClient clientProxy = ((ConnectionToClient) clientThreadList[i]);
+
+            if (clientProxy.getInfo("userName").equals(target)) {
                 try {
                     clientProxy.sendToClient(privateMessage);
-
                 } catch (Exception ex) {
                     System.out.println("Failed to send PM ");
                     ex.printStackTrace();
                 }
             }
+        }
+    }
+
+    public void sendToAllClientsInRoom(Object msg, ConnectionToClient client) {
+        String room = client.getInfo("room").toString();
+        String message = msg.toString();
+
+        //Send to all clients in the same room as sender
+        Thread[] clientThreadList = getClientConnections();
+
+        for (int i = 0; i < clientThreadList.length; i++) {
+
+            ConnectionToClient clientProxy = ((ConnectionToClient) clientThreadList[i]);
+
+            if (clientProxy.getInfo("room").equals(room)) {
+                try {
+                    clientProxy.sendToClient(message);
+                } catch (Exception ex) {
+                    System.out.println("Failed to send message ");
+                    ex.printStackTrace();
+                }
+            }
+
         }
     }
 
