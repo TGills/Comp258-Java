@@ -8,12 +8,10 @@ import java.io.*;
  */
 public class EchoServer extends AbstractServer {
     //Class variables *************************************************
-
     /**
      * The default port to listen on.
      */
     final public static int DEFAULT_PORT = 5555;
-
     //Constructors ****************************************************
     /**
      * Constructs an instance of the echo server.
@@ -43,11 +41,9 @@ public class EchoServer extends AbstractServer {
             this.sendToAllClients(msg);
         }
     }
-
     public void handleServerCommand(Object msg, ConnectionToClient client) {
         String message = msg.toString();
         if (message.startsWith("/login")) {
-
             String userName = message.split(" ")[1];
             client.setInfo("userName", userName);
             this.sendToAllClients(userName + " has arrived!");
@@ -59,9 +55,37 @@ public class EchoServer extends AbstractServer {
             System.out.println("Joining Room");
             String room = message.split(" ")[1];
             client.setInfo("room", room);
+        } else if (message.startsWith("/intercom")) {
+            System.out.println("intercom found");
+            String room = message.split(" ")[1];
+            String[] tokens = message.split(" ");
+            String intercomMessage = "";
+            for(int i = 2; i < tokens.length;i++){
+                intercomMessage+= tokens[i] + " ";
+                intercomMessage = intercomMessage.trim();
+            }
+            sendIntercomMSG(room, intercomMessage);
+            
+            
+            
         }
+        
+    }    
+    public void sendIntercomMSG(String room, String intercomMessage){
+        //Send to all clients in selected room
+        Thread[] clientThreadList = getClientConnections();
+        for (int i = 0; i < clientThreadList.length; i++) {
+            ConnectionToClient clientProxy = ((ConnectionToClient) clientThreadList[i]);
+            if (clientProxy.getInfo("room").equals(room)) {
+                try {
+                    clientProxy.sendToClient(intercomMessage);
+                } catch (Exception ex) {
+                    System.out.println("Failed to send intercom message ");
+                    ex.printStackTrace();
+                }
+            }
+        }   
     }
-
     public void sendToAClient(Object msg, String target) {
         String privateMessage = "";
         String message = msg.toString();
@@ -86,7 +110,6 @@ public class EchoServer extends AbstractServer {
             }
         }
     }
-
     public void sendToAllClientsInRoom(Object msg, ConnectionToClient client) {
         String room = client.getInfo("room").toString();
         String message = msg.toString();
@@ -109,11 +132,10 @@ public class EchoServer extends AbstractServer {
 
         }
     }
-
     /**
      * This method overrides the one in the superclass. Called when the server
      * starts listening for connections.
-     */
+     */    
     protected void serverStarted() {
         System.out.println("Server listening for connections on port " + getPort());
     }
@@ -125,7 +147,6 @@ public class EchoServer extends AbstractServer {
     protected void serverStopped() {
         System.out.println("Server has stopped listening for connections.");
     }
-
     //Class methods ***************************************************
     /**
      * This method is responsible for the creation of the server instance (there
@@ -151,17 +172,15 @@ public class EchoServer extends AbstractServer {
             System.out.println("ERROR - Could not listen for clients!");
         }
     }
-
     @Override
     protected void clientConnected(ConnectionToClient client) {
         System.out.println(client.toString() + " has connected to server.");
     }
-
     @Override
     synchronized protected void clientException(ConnectionToClient client, Throwable exception) {
         System.out.println(client.toString() + " has disconnected to server.");
         clientDisconnected(client);
     }
-
+    
 }
 //End of EchoServer class
