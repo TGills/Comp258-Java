@@ -7,11 +7,13 @@ import java.io.*;
  *
  */
 public class EchoServer extends AbstractServer {
+
     //Class variables *************************************************
     /**
      * The default port to listen on.
      */
     final public static int DEFAULT_PORT = 5555;
+
     //Constructors ****************************************************
     /**
      * Constructs an instance of the echo server.
@@ -47,31 +49,52 @@ public class EchoServer extends AbstractServer {
             String userName = message.split(" ")[1];
             client.setInfo("userName", userName);
             this.sendToAllClients(userName + " has arrived!");
-
         } else if (message.startsWith("/w")) {
             String target = message.split(" ")[1];
             sendToAClient(msg, target);
         } else if (message.startsWith("/join")) {
-            System.out.println("Joining Room");
             String room = message.split(" ")[1];
+            System.out.println("Joining Room " + room);
             client.setInfo("room", room);
         } else if (message.startsWith("/intercom")) {
             System.out.println("intercom found");
             String room = message.split(" ")[1];
             String[] tokens = message.split(" ");
             String intercomMessage = "";
-            for(int i = 2; i < tokens.length;i++){
-                intercomMessage+= tokens[i] + " ";
+            for (int i = 2; i < tokens.length; i++) {
+                intercomMessage += tokens[i] + " ";
                 intercomMessage = intercomMessage.trim();
             }
             sendIntercomMSG(room, intercomMessage);
-            
-            
-            
+            //Added for test
+        } else if (message.startsWith("/locate")) {
+            String user = message.split(" ")[1];
+            String target = user.trim();
+            searchForTarget(target);
+        }
+    }
+    //Added for test
+    public void searchForTarget(String target) {
+        System.out.println("Searching for target: " + target);
+        Thread[] clientThreadList = getClientConnections();
+        for (int i = 0; i < clientThreadList.length; i++) {
+            ConnectionToClient clientProxy = ((ConnectionToClient) clientThreadList[i]);
+            System.out.println("Comparing " + target + " to " + clientProxy.getInfo("userName"));
+            if (clientProxy.getInfo("userName").equals(target)) {
+                try {
+                    System.out.println(target + " was found in room '" + clientProxy.getInfo("room") + "'");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else if(i == clientThreadList.length && !clientProxy.getInfo("userName").equals(target) ) {
+                System.out.println(target + " is not currently on the server");
+            }
         }
         
-    }    
-    public void sendIntercomMSG(String room, String intercomMessage){
+        System.out.println("Stopping search");
+    }
+
+    public void sendIntercomMSG(String room, String intercomMessage) {
         //Send to all clients in selected room
         Thread[] clientThreadList = getClientConnections();
         for (int i = 0; i < clientThreadList.length; i++) {
@@ -84,7 +107,7 @@ public class EchoServer extends AbstractServer {
                     ex.printStackTrace();
                 }
             }
-        }   
+        }
     }
     public void sendToAClient(Object msg, String target) {
         String privateMessage = "";
@@ -135,11 +158,10 @@ public class EchoServer extends AbstractServer {
     /**
      * This method overrides the one in the superclass. Called when the server
      * starts listening for connections.
-     */    
+     */
     protected void serverStarted() {
         System.out.println("Server listening for connections on port " + getPort());
     }
-
     /**
      * This method overrides the one in the superclass. Called when the server
      * stops listening for connections.
@@ -181,6 +203,5 @@ public class EchoServer extends AbstractServer {
         System.out.println(client.toString() + " has disconnected to server.");
         clientDisconnected(client);
     }
-    
 }
 //End of EchoServer class

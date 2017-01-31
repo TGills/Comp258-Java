@@ -38,6 +38,7 @@ public class ChatClient extends AbstractClient {
         super(host, port); //Call the superclass constructor
         this.clientUI = clientUI;
         openConnection();
+        sendToServer("/join " + "Commons");
         sendToServer("/login " + userName);
     }
 
@@ -108,7 +109,8 @@ public class ChatClient extends AbstractClient {
             } else {
                 clientUI.display("Client must be logged off");
             }
-        } else {
+        }        
+        else {
             try {
                 sendToServer(message);
             } catch (IOException e) {

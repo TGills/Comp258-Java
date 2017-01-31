@@ -45,7 +45,7 @@ public class GenericList<T> {
     }
     
     
-    public static void Main(String args[]){
+    public static void main(String args[]){
         GenericList<Customer> list = new GenericList<>();
         list.add(new Customer("Bob", "Bill", 'T', 1234));        
         
