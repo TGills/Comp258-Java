@@ -35,7 +35,19 @@ public class EchoServer extends AbstractServer {
     public void handleMessageFromClient(Object msg, ConnectionToClient client) {
         String message = msg.toString();
 
-        if (message.charAt(0) == '/') {
+        if(msg instanceof Envelope){
+            Envelope e = (Envelope)msg;
+            String recipient = e.getRecipient();
+            sendToAClient("You are playing Tic Tac Toe", recipient);
+            TicTacTow ttt = new TicTacTow(client.getInfo("userName").toString(), recipient);
+            
+            handleTicTacTow(ttt);
+            
+                
+        }
+        
+        
+        else if (message.charAt(0) == '/') {
             System.out.println("Command found");
             handleServerCommand(msg, client);
         } else {
@@ -73,6 +85,16 @@ public class EchoServer extends AbstractServer {
             searchForTarget(target);
         }
     }
+    
+    public void handleTicTacTow(TicTacTow ttt){
+        ttt.switchActivePlayer();
+        sendToAClient(ttt, ttt.getActivePlayer());
+        
+        
+    }
+    
+    
+    
     //Added for test
     public void searchForTarget(String target) {
         System.out.println("Searching for target: " + target);

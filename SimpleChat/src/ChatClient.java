@@ -11,13 +11,12 @@ import java.util.logging.Logger;
  */
 public class ChatClient extends AbstractClient {
     //Instance variables **********************************************
-
     /**
      * The interface type variable. It allows the implementation of the display
      * method in the client.
      */
     ChatIF clientUI;
-
+    TicTacTow game;
     //Constructors ****************************************************
     /**
      * Constructs an instance of the chat client.
@@ -32,7 +31,6 @@ public class ChatClient extends AbstractClient {
         this.clientUI = clientUI;
         openConnection();
     }
-
     public ChatClient(String host, int port, String userName, ChatIF clientUI)
             throws IOException {
         super(host, port); //Call the superclass constructor
@@ -41,7 +39,6 @@ public class ChatClient extends AbstractClient {
         sendToServer("/join " + "Commons");
         sendToServer("/login " + userName);
     }
-
     //Instance methods ************************************************
     /**
      * This method handles all data that comes in from the server.
@@ -49,9 +46,14 @@ public class ChatClient extends AbstractClient {
      * @param msg The message from the server.
      */
     public void handleMessageFromServer(Object msg) {
-        clientUI.display(msg.toString());
+        if (msg instanceof TicTacTow) {
+            TicTacTow ttt = (TicTacTow) msg;
+            ((GUIObjectConsole) clientUI).displayBoard(ttt);
+            clientUI.display("Your move");
+        } else {
+            clientUI.display(msg.toString());
+        }
     }
-
     /**
      * This method handles all data coming from the UI
      *
@@ -73,7 +75,6 @@ public class ChatClient extends AbstractClient {
         }
 
     }
-
     public void handleClientCommand(String message) {
         //ELSE IF's FOR EVERYTHING!!!! 
 
@@ -109,8 +110,7 @@ public class ChatClient extends AbstractClient {
             } else {
                 clientUI.display("Client must be logged off");
             }
-        }        
-        else {
+        } else {
             try {
                 sendToServer(message);
             } catch (IOException e) {
@@ -121,7 +121,6 @@ public class ChatClient extends AbstractClient {
         }
 
     }
-
     /**
      * This method terminates the client.
      */
@@ -132,7 +131,6 @@ public class ChatClient extends AbstractClient {
         }
         System.exit(0);
     }
-
     @Override
     protected void connectionException(Exception exception) {
         System.out.println("Server shutdown");

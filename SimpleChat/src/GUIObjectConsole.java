@@ -92,16 +92,35 @@ public class GUIObjectConsole extends JFrame implements ChatIF {
         this.user = user;
 
     }
-
     public void send(String msg) {
         client.handleMessageFromClientUI(msg);
     }
-
     public void display(String message) {
         messageList.insert(message + "/n", 0);
 
+    }    
+    public void displayBoard(TicTacTow ttt){
+        
+        int[][] board = ttt.getBoard();
+        String line = "";
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                if(board[i][j] == 1){
+                    line+=" X ";
+                }
+                else if(board[i][j] == 2){
+                    line+=" O ";
+                }
+                else{
+                    line += " [] ";
+                }                
+            }          
+            messageList.append(line);
+            line="";
+        }
+        
+        
     }
-
     public void open() {
         user = userNameTxF.getText();
         try {
@@ -112,7 +131,6 @@ public class GUIObjectConsole extends JFrame implements ChatIF {
             System.exit(1);
         }
     }
-
     public static void main(String[] args) {
         String host = "";
         String user = "Someone";
